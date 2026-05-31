@@ -1,0 +1,214 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  warehouse
+  planner
+  manager
+}
+
+enum ImportStatus {
+  draft
+  validated
+  imported
+  failed
+}
+
+enum OrderStatus {
+  new
+  ready_for_picking
+  picking
+  completed
+  shortage
+  awaiting_manager_approval
+  approved_with_shortages
+  issued
+  cancelled
+}
+
+enum PrintType {
+  weekly_orders
+  order_cartrouting
+  shortages
+}
+
+model User {
+  id          String   @id @default(cuid())
+  username    String   @unique
+  displayName String
+  passwordHash String
+  role        UserRole
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  imports              ImportBatch[]
+  issuedOrders         WeeklyOrder[] @relation("IssuedOrders")
+  cartroutingSnapshots OrderCartroutingSnapshot[]
+  shortageApprovals    ShortageApproval[]
+  auditLogs            AuditLog[]
+  printJobs            PrintJob[]
+}
+
+model ImportBatch {
+  id              String       @id @default(cuid())
+  fileName        String
+  fileHash        String
+  year            Int
+  weekNumber      Int
+  dateFrom        DateTime
+  dateTo          DateTime
+  mappingJson     String
+  status          ImportStatus @default(draft)
+  notes           String?
+  createdAt       DateTime     @default(now())
+  createdByUserId String
+
+  createdBy User                  @relation(fields: [createdByUserId], references: [id])
+  rows      ImportedShippingRow[]
+  orders    WeeklyOrder[]
+
+  @@index([year, weekNumber])
+}
+
+model ImportedShippingRow {
+  id              String @id @default(cuid())
+  importBatchId   String
+  tankIndex       String
+  sourceRowNumber Int
+  day1Quantity    Int    @default(0)
+  day2Quantity    Int    @default(0)
+  day3Quantity    Int    @default(0)
+  day4Quantity    Int    @default(0)
+  day5Quantity    Int    @default(0)
+  weeklyQuantity  Int
+  notes           String?
+  parseStatus     String @default("ok")
+
+  importBatch ImportBatch @relation(fields: [importBatchId], references: [id], onDelete: Cascade)
+}
+
+model WeeklyOrder {
+  id                 String      @id @default(cuid())
+  year               Int
+  weekNumber         Int
+  tankIndex          String
+  referenceNumber    String      @unique
+  plannedQuantity    Int
+  notes              String?
+  status             OrderStatus @default(new)
+  hasShortages       Boolean     @default(false)
+  issuedToProduction Boolean     @default(false)
+  issuedAt           DateTime?
+  issuedByUserId     String?
+  importBatchId      String
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+
+  importBatch          ImportBatch                @relation(fields: [importBatchId], references: [id])
+  issuedBy             User?                      @relation("IssuedOrders", fields: [issuedByUserId], references: [id])
+  cartroutingSnapshots OrderCartroutingSnapshot[]
+  shortageApprovals    ShortageApproval[]
+  printJobs            PrintJob[]
+
+  @@index([year, weekNumber])
+  @@index([tankIndex])
+}
+
+model OrderCartroutingSnapshot {
+  id              String   @id @default(cuid())
+  weeklyOrderId   String
+  tankIndex       String
+  cartroutingName String
+  revision        String?
+  sourceFileName  String
+  sourceFileHash  String
+  createdByUserId String
+  createdAt       DateTime @default(now())
+
+  weeklyOrder WeeklyOrder            @relation(fields: [weeklyOrderId], references: [id], onDelete: Cascade)
+  createdBy   User                   @relation(fields: [createdByUserId], references: [id])
+  items       OrderCartroutingItem[]
+}
+
+model OrderCartroutingItem {
+  id                String  @id @default(cuid())
+  snapshotId        String
+  lineNo            Int
+  partIndex         String
+  partDescription   String
+  location          String
+  quantityPerTank   Decimal
+  requiredQuantity  Decimal
+  pickedQuantity    Decimal @default(0)
+  shortageQuantity  Decimal @default(0)
+  isCompleted       Boolean @default(false)
+  notes             String?
+
+  snapshot OrderCartroutingSnapshot @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+
+  @@index([partIndex])
+}
+
+model ShortageApproval {
+  id                   String   @id @default(cuid())
+  weeklyOrderId        String
+  approvedByUserId     String
+  approvedAt           DateTime @default(now())
+  reason               String
+  shortageSnapshotJson String
+  isActive             Boolean  @default(true)
+
+  weeklyOrder WeeklyOrder @relation(fields: [weeklyOrderId], references: [id], onDelete: Cascade)
+  approvedBy  User        @relation(fields: [approvedByUserId], references: [id])
+}
+
+model ReferenceNumberSequence {
+  id          String   @id @default(cuid())
+  year        Int
+  weekNumber  Int
+  prefix      String   @default("T")
+  lastNumber  Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([year, weekNumber])
+}
+
+model AuditLog {
+  id           String   @id @default(cuid())
+  userId       String
+  entityType   String
+  entityId     String
+  action       String
+  fieldName    String?
+  oldValue     String?
+  newValue     String?
+  reason       String?
+  metadataJson String?
+  createdAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}
+
+model PrintJob {
+  id                String    @id @default(cuid())
+  printType         PrintType
+  weeklyOrderId     String?
+  year              Int?
+  weekNumber        Int?
+  filePath          String
+  generatedByUserId String
+  generatedAt       DateTime  @default(now())
+
+  weeklyOrder WeeklyOrder? @relation(fields: [weeklyOrderId], references: [id])
+  generatedBy User         @relation(fields: [generatedByUserId], references: [id])
+}
