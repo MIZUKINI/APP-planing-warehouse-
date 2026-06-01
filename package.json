@@ -15,6 +15,7 @@
   "dependencies": {
     "@prisma/client": "latest",
     "exceljs": "latest",
+    "xlsx": "latest",
     "next": "latest",
     "react": "latest",
     "react-dom": "latest",

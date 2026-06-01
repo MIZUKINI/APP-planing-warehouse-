@@ -1,3 +1,4 @@
+import { readProductionRecords } from "@/lib/excel-production-reader";
 import { calculatePickingItems, generateReferenceNumber, updatePickedQuantity, type OrderStatus } from "@/lib/domain";
 
 export const baseCartrouting = [
@@ -34,6 +35,17 @@ const orderTwoItems = calculatePickingItems(3, baseCartrouting).map((item) => {
   if (item.partIndex === "PIPE-SUPPORT") return updatePickedQuantity(item, 9);
   return updatePickedQuantity(item, item.requiredQuantity);
 });
+
+export const productionSheetRows = [
+  [null, null, null, null, null, null],
+  [null, null, 23, 23, 23, 23],
+  [null, null, "01-06", "02-06", "03-06", "04-06"],
+  [null, "TANK-AX-100", 2, 0, 3, 0],
+  [null, "TANK-BX-210", 0, 1, 0, 2],
+  [null, "TANK-CX-310", 0, 0, 2, 0]
+];
+
+export const productionRecords = readProductionRecords({ rows: productionSheetRows });
 
 export const shippingPlanRows = [
   {

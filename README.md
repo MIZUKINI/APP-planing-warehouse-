@@ -116,6 +116,33 @@ Dopiero przejście `npm test` i `npm run build` potwierdza, że aplikacja jest g
 npm test
 ```
 
+
+## Specyfikacja czytania Excela
+
+Parser planu produkcyjnego jest przygotowany pod pliki `.xlsx` i `.xls` konwertowane do arkusza w stylu SheetJS/XLSX oraz pod dane tablicowe w testach. Reguły czytania:
+
+- ignorujemy ukryte kolumny i ukryte wiersze,
+- ignorujemy puste wiersze i puste kolumny,
+- nie zakładamy stałych kolumn produkcyjnych — grupy tygodni wykrywane są dynamicznie,
+- jedyną stałą kolumną biznesową jest kolumna **B** jako `tank_index`,
+- wiersz 2 zawiera `production_week`,
+- wiersz 3 zawiera `production_date` w formacie `DD-MM`,
+- dane zaczynają się od wiersza 4,
+- parser tworzy jeden rekord produkcyjny na każdą komórkę produkcyjną,
+- obsługiwane są tygodnie produkcyjne 1-52,
+- ilości są zachowywane dokładnie tak, jak są zapisane w komórce, w tym wartości `0`.
+
+Format rekordu wyjściowego:
+
+```json
+{
+  "tank_index": "CAT-468-7433",
+  "production_week": 12,
+  "production_date": "17-03",
+  "quantity": 2
+}
+```
+
 ## Model domenowy
 
 Najważniejsze encje znajdują się w `prisma/schema.prisma`:

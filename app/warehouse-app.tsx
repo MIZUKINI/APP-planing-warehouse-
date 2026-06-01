@@ -8,7 +8,7 @@ import {
   type OrderStatus,
   type UserRole
 } from "@/lib/domain";
-import { baseCartrouting, dashboardSample, shippingPlanRows } from "@/lib/sample-data";
+import { baseCartrouting, dashboardSample, productionRecords, shippingPlanRows } from "@/lib/sample-data";
 
 type DemoData = typeof dashboardSample;
 type DemoOrder = DemoData["orders"][number];
@@ -175,6 +175,7 @@ export function WarehouseApp() {
   }, [selectedShortageIndex, shortageRows]);
 
   const databasePreview = useMemo(() => ({
+    latestProductionRecords: productionRecords,
     latestShippingPlanRows: shippingPlanRows,
     generatedWeeklyOrders: orders.map((order, index) => ({
       lp: index + 1,
