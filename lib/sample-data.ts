@@ -1,6 +1,6 @@
 import { calculatePickingItems, generateReferenceNumber, updatePickedQuantity, type OrderStatus } from "@/lib/domain";
 
-const baseCartrouting = [
+export const baseCartrouting = [
   {
     lineNo: 10,
     partIndex: "BRK-220-L",
@@ -34,6 +34,36 @@ const orderTwoItems = calculatePickingItems(3, baseCartrouting).map((item) => {
   if (item.partIndex === "PIPE-SUPPORT") return updatePickedQuantity(item, 9);
   return updatePickedQuantity(item, item.requiredQuantity);
 });
+
+export const shippingPlanRows = [
+  {
+    lp: 1,
+    tankIndex: "TANK-AX-100",
+    weekNumber: 23,
+    year: 2026,
+    weekdayQuantities: [2, 0, 3, 0, 0],
+    weeklyQuantity: 5,
+    note: "Priority shipment"
+  },
+  {
+    lp: 2,
+    tankIndex: "TANK-BX-210",
+    weekNumber: 23,
+    year: 2026,
+    weekdayQuantities: [0, 1, 0, 2, 0],
+    weeklyQuantity: 3,
+    note: "Needs manager shortage approval"
+  },
+  {
+    lp: 3,
+    tankIndex: "TANK-CX-310",
+    weekNumber: 23,
+    year: 2026,
+    weekdayQuantities: [0, 0, 2, 0, 0],
+    weeklyQuantity: 2,
+    note: "Ready to issue"
+  }
+];
 
 export const dashboardSample = {
   weekNumber: 23,

@@ -421,3 +421,153 @@ label {
     break-inside: avoid;
   }
 }
+
+.tabBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 16px;
+}
+
+.tabButton,
+.linkButton,
+.tableLink {
+  border: 0;
+  font-weight: 800;
+}
+
+.tabButton {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--foreground);
+  padding: 12px 16px;
+}
+
+.tabButton.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #ffffff;
+}
+
+.linkButton,
+.tableLink {
+  background: transparent;
+  color: var(--primary-dark);
+  padding: 0;
+  text-decoration: underline;
+}
+
+.weekLinkBox {
+  align-items: center;
+  background: #f7faff;
+  border: 1px dashed var(--line);
+  border-radius: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 14px;
+}
+
+.weekLinkBox span {
+  color: var(--muted);
+}
+
+.checkboxLabel {
+  align-items: center;
+  color: var(--foreground);
+  display: inline-flex;
+  flex-direction: row;
+  font-size: 0.92rem;
+  font-weight: 800;
+  gap: 8px;
+}
+
+.checkboxLabel input {
+  margin: 0;
+  width: auto;
+}
+
+.inlineCheckbox {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 10px 14px;
+  white-space: nowrap;
+}
+
+.compactButton {
+  display: block;
+  margin-top: 8px;
+  padding: 8px 12px;
+}
+
+.innerColumns {
+  margin-top: 16px;
+}
+
+.subPanel {
+  background: #fbfdff;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 18px;
+}
+
+.subPanel h3 {
+  margin: 0 0 10px;
+}
+
+.miniLogList {
+  display: grid;
+  gap: 10px;
+}
+
+.miniLogList div {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 10px;
+}
+
+.miniLogList small {
+  color: var(--muted);
+  display: block;
+  line-height: 1.5;
+  margin-top: 4px;
+}
+
+.jsonPreview {
+  background: #0d1b2f;
+  border-radius: 16px;
+  color: #d8e7ff;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  max-height: 70vh;
+  overflow: auto;
+  padding: 18px;
+}
+
+@media (max-width: 720px) {
+  .tabBar {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .tabButton {
+    width: 100%;
+  }
+
+  .weekLinkBox,
+  .inlineCheckbox {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+
+@media print {
+  .tabBar,
+  .weekLinkBox,
+  .compactButton,
+  .jsonPreview {
+    display: none !important;
+  }
+}

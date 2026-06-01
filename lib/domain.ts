@@ -88,7 +88,7 @@ export function generateReferenceNumber(weekNumber: number, sequenceNumber: numb
     throw new Error("Year must be a valid integer.");
   }
 
-  return `T${weekNumber}/${sequenceNumber}/${year}`;
+  return `T${weekNumber}/${String(sequenceNumber).padStart(2, "0")}/${year}`;
 }
 
 export function calculatePickingItems(orderQuantity: number, items: CartroutingItemInput[]): PickingItem[] {

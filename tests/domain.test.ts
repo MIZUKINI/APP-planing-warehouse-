@@ -30,7 +30,7 @@ describe("weekly shipping import", () => {
 
 describe("reference numbers", () => {
   it("uses the approved weekly format", () => {
-    expect(generateReferenceNumber(23, 1, 2026)).toBe("T23/1/2026");
+    expect(generateReferenceNumber(23, 1, 2026)).toBe("T23/01/2026");
   });
 });
 
@@ -59,7 +59,7 @@ describe("shortage filtering and issuing", () => {
   it("groups shortages by part and keeps reference numbers", () => {
     const summary = summarizeShortages([
       {
-        referenceNumber: "T23/1/2026",
+        referenceNumber: "T23/01/2026",
         tankIndex: "TANK-1",
         partIndex: "SEAL",
         partDescription: "Rubber seal",
@@ -67,7 +67,7 @@ describe("shortage filtering and issuing", () => {
         shortageQuantity: 2
       },
       {
-        referenceNumber: "T23/2/2026",
+        referenceNumber: "T23/02/2026",
         tankIndex: "TANK-2",
         partIndex: "SEAL",
         partDescription: "Rubber seal",
@@ -77,7 +77,7 @@ describe("shortage filtering and issuing", () => {
     ]);
 
     expect(summary.SEAL.total).toBe(5);
-    expect(summary.SEAL.orders.map((order) => order.referenceNumber)).toEqual(["T23/1/2026", "T23/2/2026"]);
+    expect(summary.SEAL.orders.map((order) => order.referenceNumber)).toEqual(["T23/01/2026", "T23/02/2026"]);
   });
 
   it("blocks issuing an order with shortages until manager approval is active", () => {

@@ -66,21 +66,31 @@ Na ekranie startowym powinieneś zobaczyć interaktywne demo MVP z:
 - logowaniem demo jako Magazynier, Planista albo Kierownik,
 - podsumowaniem tygodnia,
 - sekcją mapowania Excela i działającym zatwierdzeniem importu dla Planisty/Kierownika,
-- listą zleceń z filtrem, podglądem, wydaniem i cofnięciem wydania,
+- zakładką **Plan produkcyjny** z tabelą tygodnia: LP, index zbiornika, numer ref., ilość, braki i checkbox wydania,
 - edycją ilości pobranych w cartroutingu i automatycznym przeliczaniem braków,
 - blokadą wydania zlecenia z brakami do czasu zatwierdzenia przez Kierownika,
-- listą braków filtrowaną po części i numerze referencyjnym,
-- przykładowym snapshotem cartroutingu z angielskimi nazwami części.
+- zakładką **Lista braków** z tabelą: index braku, indeks zbiornika, numer referencyjny, ilość, data dodania i checkbox „czy dojechało”,
+- wejściem w indeks braku, które pokazuje wszystkie zlecenia i numery referencyjne dla tego samego elementu,
+- zakładką **Logi kierownika**, widoczną tylko po zalogowaniu jako Kierownik,
+- zakładką **Baza JSON** pokazującą ostatnie dane z planu wysyłek, bazowe cartroutingi i unikatowe elementy z cartroutingów.
 
 ## Demo ról i akcji
 
 W obecnym MVP przyciski działają lokalnie na danych demonstracyjnych w pamięci przeglądarki:
 
-- **Magazynier** może podejrzeć zlecenia, zmieniać ilości pobrane i wydać zlecenie bez braków.
-- **Planista** może zatwierdzić import demo oraz pracować na liście zleceń.
-- **Kierownik** może zatwierdzić wydanie mimo braków i cofnąć wydanie z produkcji.
+- **Magazynier** może podejrzeć plan produkcyjny, zmieniać ilości pobrane, oznaczać braki jako dojechane i wydać zlecenie bez braków.
+- **Planista** może zatwierdzić import demo oraz pracować na planie produkcyjnym.
+- **Kierownik** może zatwierdzić wydanie mimo braków, cofnąć wydanie z produkcji i widzi dodatkową zakładkę logów.
 
 Dane nie zapisują się jeszcze w bazie po odświeżeniu strony — to etap interaktywnego frontendu MVP przed podpięciem prawdziwych endpointów i Excela.
+
+## Zakładki MVP
+
+- **Dashboard** — ogólne podsumowanie startowe oraz mapowanie importu.
+- **Plan produkcyjny** — tygodniowa lista wózków do zebrania, w formie tabeli podobnej do dokumentu z odnośnikami tygodni.
+- **Lista braków** — lista wszystkich brakujących elementów z filtrem ukrywania pozycji oznaczonych jako „dojechało”.
+- **Logi kierownika** — podgląd zmian, poprzedniej wersji, nowej wersji, użytkownika oraz daty i godziny; widoczne tylko dla Kierownika.
+- **Baza JSON** — techniczny podgląd ostatnio pobranych danych z planu wysyłek, bazowych cartroutingów i unikatowych elementów.
 
 ## Czy aplikacja działa teraz?
 
