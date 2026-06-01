@@ -31,9 +31,6 @@ MVP aplikacji magazynowej do monitorowania tygodniowych planów działania i kom
 ## Uruchomienie lokalne
 
 ```bash
-npm install
-cp .env.example .env
-npm run prisma:generate
 npm run dev
 ```
 
@@ -44,14 +41,17 @@ http://localhost:3000
 ```
 
 
+## Tryby uruchomienia
+
+- `npm run dev` — uruchamia statyczny, interaktywny tryb demo na czystym Node.js, bez `npm install`. Ten tryb służy do szybkiego przeklikania ról i zakładek w tym środowisku.
+- `npm run dev:next` — uruchamia właściwą aplikację Next.js po poprawnym `npm install`.
+- `npm run test:static` — startuje statyczny serwer demo na porcie testowym i sprawdza, czy podstawowe okna oraz akcje są dostępne w HTML.
+
 ## Jak podejrzeć aplikację
 
-Po sklonowaniu repozytorium uruchom lokalnie:
+Po sklonowaniu repozytorium możesz uruchomić tryb demo bez instalowania zależności npm:
 
 ```bash
-npm install
-cp .env.example .env
-npm run prisma:generate
 npm run dev
 ```
 
