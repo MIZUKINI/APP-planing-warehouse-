@@ -1,6 +1,6 @@
 import { spawn } from "node:child_process";
 
-const port = 3100;
+const port = 3001;
 const server = spawn(process.execPath, ["scripts/static-demo-server.mjs"], {
   env: { ...process.env, PORT: String(port) },
   stdio: ["ignore", "pipe", "pipe"]

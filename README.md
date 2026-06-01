@@ -37,7 +37,7 @@ npm run dev
 Aplikacja startuje domyślnie pod adresem:
 
 ```text
-http://localhost:3000
+http://localhost:3001
 ```
 
 
@@ -58,7 +58,7 @@ npm run dev
 Następnie otwórz w przeglądarce:
 
 ```text
-http://localhost:3000
+http://localhost:3001
 ```
 
 Na ekranie startowym powinieneś zobaczyć interaktywne demo MVP z:
