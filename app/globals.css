@@ -228,3 +228,196 @@ th {
     grid-template-columns: 1fr;
   }
 }
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+input,
+select {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #ffffff;
+  color: var(--foreground);
+  padding: 11px 12px;
+  margin-top: 6px;
+}
+
+label {
+  color: var(--muted);
+  display: grid;
+  font-size: 0.84rem;
+  font-weight: 800;
+  gap: 4px;
+}
+
+.muted {
+  color: var(--muted);
+  line-height: 1.5;
+  margin-bottom: 0;
+}
+
+.messageBar {
+  background: #10233f;
+  border-radius: 16px;
+  color: #ffffff;
+  font-weight: 700;
+  line-height: 1.45;
+  margin-bottom: 16px;
+  padding: 14px 18px;
+}
+
+.interactiveCard {
+  min-width: 0;
+}
+
+.buttonRow,
+.toolbar,
+.actionStack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.toolbar {
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.toolbar input {
+  min-width: min(320px, 100%);
+}
+
+.secondaryButton,
+.dangerButton {
+  border: 0;
+  border-radius: 999px;
+  font-weight: 800;
+  padding: 12px 18px;
+  white-space: nowrap;
+}
+
+.secondaryButton {
+  background: #eaf2ff;
+  color: var(--primary-dark);
+}
+
+.dangerButton {
+  background: #ffe8e8;
+  color: #9b1c1c;
+}
+
+.badgeOk {
+  background: var(--ok-bg);
+  color: var(--ok-text);
+}
+
+.selectedRow {
+  background: #f2f7ff;
+}
+
+.actionStack {
+  align-items: center;
+}
+
+.editablePart {
+  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 120px auto;
+  gap: 12px;
+}
+
+.shortageOrders {
+  color: var(--muted);
+  margin: 10px 0 0;
+  padding-left: 18px;
+}
+
+.shortageOrders li + li {
+  margin-top: 6px;
+}
+
+@media (max-width: 720px) {
+  .shell {
+    width: min(100% - 20px, 1180px);
+    padding: 20px 0;
+  }
+
+  .panel,
+  .loginCard,
+  .stats article {
+    border-radius: 16px;
+    padding: 16px;
+  }
+
+  h1 {
+    font-size: 2rem;
+    line-height: 1.08;
+  }
+
+  .responsiveHeader,
+  .panelHeader,
+  .toolbar,
+  .buttonRow,
+  .actionStack {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .primaryButton,
+  .secondaryButton,
+  .dangerButton,
+  .badge {
+    text-align: center;
+    width: 100%;
+  }
+
+  .editablePart {
+    align-items: stretch;
+    grid-template-columns: 1fr;
+  }
+
+  th,
+  td {
+    padding: 12px 8px;
+  }
+}
+
+@media print {
+  body {
+    background: #ffffff;
+  }
+
+  .loginCard,
+  .messageBar,
+  .toolbar,
+  .buttonRow,
+  .actionStack,
+  input,
+  select {
+    display: none !important;
+  }
+
+  .shell {
+    width: 100%;
+    padding: 0;
+  }
+
+  .panel,
+  .stats article {
+    box-shadow: none;
+    break-inside: avoid;
+  }
+}

@@ -61,13 +61,26 @@ Następnie otwórz w przeglądarce:
 http://localhost:3000
 ```
 
-Na ekranie startowym powinieneś zobaczyć demonstracyjny dashboard MVP z:
+Na ekranie startowym powinieneś zobaczyć interaktywne demo MVP z:
 
+- logowaniem demo jako Magazynier, Planista albo Kierownik,
 - podsumowaniem tygodnia,
-- sekcją mapowania Excela,
-- listą zleceń,
-- brakami,
+- sekcją mapowania Excela i działającym zatwierdzeniem importu dla Planisty/Kierownika,
+- listą zleceń z filtrem, podglądem, wydaniem i cofnięciem wydania,
+- edycją ilości pobranych w cartroutingu i automatycznym przeliczaniem braków,
+- blokadą wydania zlecenia z brakami do czasu zatwierdzenia przez Kierownika,
+- listą braków filtrowaną po części i numerze referencyjnym,
 - przykładowym snapshotem cartroutingu z angielskimi nazwami części.
+
+## Demo ról i akcji
+
+W obecnym MVP przyciski działają lokalnie na danych demonstracyjnych w pamięci przeglądarki:
+
+- **Magazynier** może podejrzeć zlecenia, zmieniać ilości pobrane i wydać zlecenie bez braków.
+- **Planista** może zatwierdzić import demo oraz pracować na liście zleceń.
+- **Kierownik** może zatwierdzić wydanie mimo braków i cofnąć wydanie z produkcji.
+
+Dane nie zapisują się jeszcze w bazie po odświeżeniu strony — to etap interaktywnego frontendu MVP przed podpięciem prawdziwych endpointów i Excela.
 
 ## Czy aplikacja działa teraz?
 
