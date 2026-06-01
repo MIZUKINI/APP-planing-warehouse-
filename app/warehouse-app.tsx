@@ -1,51 +1,24 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import {
-  canIssueToProduction,
-  summarizeShortages,
-  updatePickedQuantity,
-  type OrderStatus,
-  type UserRole
-} from "@/lib/domain";
+import { canIssueToProduction, summarizeShortages, updatePickedQuantity, type OrderStatus, type UserRole } from "@/lib/domain";
 import { baseCartrouting, dashboardSample, productionRecords, shippingPlanRows } from "@/lib/sample-data";
+import {
+  createChangeLogEntry,
+  createDemoUser,
+  roleLabels,
+  selectAppTab,
+  tabLabels,
+  visibleTabsForUser,
+  type AppTab,
+  type ChangeLogEntry,
+  type DemoUser
+} from "@/lib/warehouse-ui-state";
 
 type DemoData = typeof dashboardSample;
 type DemoOrder = DemoData["orders"][number];
 type DemoItem = DemoOrder["items"][number];
-type AppTab = "dashboard" | "productionPlan" | "shortages" | "managerLogs" | "database";
-
-type DemoUser = {
-  role: UserRole;
-  name: string;
-};
-
-type ChangeLog = {
-  id: number;
-  at: string;
-  user: string;
-  role: UserRole;
-  action: string;
-  entity: string;
-  previousValue: string;
-  nextValue: string;
-};
-
 type ArrivedState = Record<string, boolean>;
-
-const roleLabels: Record<UserRole, string> = {
-  warehouse: "Magazynier",
-  planner: "Planista",
-  manager: "Kierownik"
-};
-
-const tabLabels: Record<AppTab, string> = {
-  dashboard: "Dashboard",
-  productionPlan: "Plan produkcyjny",
-  shortages: "Lista braków",
-  managerLogs: "Logi kierownika",
-  database: "Baza JSON"
-};
 
 function cloneDemoData(): DemoData {
   return JSON.parse(JSON.stringify(dashboardSample)) as DemoData;
@@ -118,7 +91,7 @@ export function WarehouseApp() {
   const [shortageFilter, setShortageFilter] = useState("");
   const [showArrivedShortages, setShowArrivedShortages] = useState(true);
   const [arrivedShortages, setArrivedShortages] = useState<ArrivedState>({});
-  const [logs, setLogs] = useState<ChangeLog[]>([]);
+  const [logs, setLogs] = useState<ChangeLogEntry[]>([]);
   const [message, setMessage] = useState("Zaloguj się rolą demo i wybierz zakładkę.");
   const [importApproved, setImportApproved] = useState(false);
 
@@ -130,13 +103,7 @@ export function WarehouseApp() {
   const issuedOrders = orders.filter((order) => order.issuedToProduction).length;
   const blockedOrders = orders.filter((order) => hasOrderShortages(order) && order.status !== "approved_with_shortages").length;
 
-  const visibleTabs = useMemo<AppTab[]>(() => {
-    const tabs: AppTab[] = ["dashboard", "productionPlan", "shortages", "database"];
-    if (user?.role === "manager") {
-      tabs.splice(3, 0, "managerLogs");
-    }
-    return tabs;
-  }, [user?.role]);
+  const visibleTabs = useMemo(() => visibleTabsForUser(user), [user]);
 
   const filteredOrders = useMemo(() => {
     const query = orderFilter.trim().toLowerCase();
@@ -193,19 +160,9 @@ export function WarehouseApp() {
     }))
   }), [orders]);
 
-  function writeLog(action: string, entity: string, previousValue: string, nextValue: string) {
-    const actor = user ?? { name: "Niezalogowany", role: "warehouse" as UserRole };
+  function writeLog(action: string, entity: string, previousValue: string, nextValue: string, actor = user) {
     setLogs((current) => [
-      {
-        id: current.length + 1,
-        at: formatNow(),
-        user: actor.name,
-        role: actor.role,
-        action,
-        entity,
-        previousValue,
-        nextValue
-      },
+      createChangeLogEntry(current.length + 1, actor, formatNow(), action, entity, previousValue, nextValue),
       ...current
     ]);
   }
@@ -349,11 +306,9 @@ export function WarehouseApp() {
   }
 
   function selectTab(tab: AppTab) {
-    if (tab === "managerLogs" && user?.role !== "manager") {
-      setMessage("Zakładka logów jest widoczna tylko dla Kierownika.");
-      return;
-    }
-    setActiveTab(tab);
+    const result = selectAppTab(tab, user, activeTab);
+    setActiveTab(result.activeTab);
+    setMessage(result.message);
   }
 
   return (
@@ -367,16 +322,7 @@ export function WarehouseApp() {
           </p>
         </div>
 
-        <form
-          className="loginCard interactiveCard"
-          onSubmit={(event) => {
-            event.preventDefault();
-            const nextUser = { role: loginRole, name: roleLabels[loginRole] };
-            setUser(nextUser);
-            setMessage(`Zalogowano jako ${roleLabels[loginRole]}.`);
-            writeLog("Logowanie demo", nextUser.name, "logged out", "logged in");
-          }}
-        >
+        <div className="loginCard interactiveCard">
           <span>Logowanie demo</span>
           <strong>{user ? `Zalogowano: ${user.name}` : "Wybierz rolę"}</strong>
           <label>
@@ -388,12 +334,23 @@ export function WarehouseApp() {
             </select>
           </label>
           <div className="buttonRow">
-            <button className="primaryButton" type="submit">Zaloguj</button>
+            <button
+              className="primaryButton"
+              type="button"
+              onClick={() => {
+                const nextUser = createDemoUser(loginRole);
+                setUser(nextUser);
+                setMessage(`Zalogowano jako ${nextUser.name}.`);
+                writeLog("Logowanie demo", nextUser.name, "logged out", "logged in", nextUser);
+              }}
+            >
+              Zaloguj
+            </button>
             <button
               className="secondaryButton"
               type="button"
               onClick={() => {
-                writeLog("Wylogowanie demo", user?.name ?? "brak", "logged in", "logged out");
+                writeLog("Wylogowanie demo", user?.name ?? "brak", "logged in", "logged out", user);
                 setUser(null);
                 if (activeTab === "managerLogs") setActiveTab("dashboard");
                 setMessage("Wylogowano.");
@@ -402,7 +359,7 @@ export function WarehouseApp() {
               Wyloguj
             </button>
           </div>
-        </form>
+        </div>
       </section>
 
       <nav className="tabBar" aria-label="Zakładki aplikacji">
