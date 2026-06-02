@@ -18,7 +18,7 @@ describe("warehouse UI state", () => {
     const warehouse = createDemoUser("warehouse");
     expect(selectAppTab("productionPlan", warehouse, "dashboard")).toEqual({
       activeTab: "productionPlan",
-      message: "Otworzono zakładkę: Plan produkcyjny."
+      message: "Otworzono zakładkę: Zlecenia tygodnia."
     });
     expect(selectAppTab("managerLogs", warehouse, "productionPlan").activeTab).toBe("productionPlan");
   });
