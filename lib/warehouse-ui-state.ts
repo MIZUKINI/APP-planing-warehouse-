@@ -31,10 +31,10 @@ export const roleLabels: Record<UserRole, string> = {
 
 export const tabLabels: Record<AppTab, string> = {
   dashboard: "Dashboard",
-  productionPlan: "Plan produkcyjny",
-  shortages: "Lista braków",
+  productionPlan: "Zlecenia tygodnia",
+  shortages: "Braki",
   managerLogs: "Logi kierownika",
-  database: "Baza JSON"
+  database: "Baza techniczna"
 };
 
 export function createDemoUser(role: UserRole): DemoUser {
